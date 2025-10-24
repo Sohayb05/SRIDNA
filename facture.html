@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Facture</title>
+    <link rel="stylesheet" href="./facture.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="company-info">
+                <h1><i class="fas fa-building"></i> Mon Entreprise</h1>
+                <p>123 Rue de la Paix<br>
+                75001 Paris, France<br>
+                Tél: +33 1 23 45 67 89<br>
+                Email: contact@monentreprise.fr</p>
+            </div>
+            <div class="invoice-details">
+                <h2>FACTURE</h2>
+                <div class="invoice-info">
+                    <p><strong>N° Facture:</strong> <span id="invoiceNumber">INV-2024-001</span></p>
+                    <p><strong>Date:</strong> <span id="invoiceDate">15 Janvier 2024</span></p>
+                    <p><strong>Échéance:</strong> <span id="dueDate">15 Février 2024</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="client-info">
+            <h3>Facturé à:</h3>
+            <div class="client-details">
+                <p><strong>Nom du Client</strong><br>
+                Adresse du Client<br>
+                Code Postal, Ville<br>
+                Pays</p>
+            </div>
+        </div>
+
+        <div class="invoice-items">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantité</th>
+                        <th>Prix Unitaire</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTableBody">
+                    <tr>
+                        <td>Service de développement web</td>
+                        <td>40</td>
+                        <td>75,00 €</td>
+                        <td>3 000,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Design graphique</td>
+                        <td>20</td>
+                        <td>50,00 €</td>
+                        <td>1 000,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Consultation technique</td>
+                        <td>10</td>
+                        <td>100,00 €</td>
+                        <td>1 000,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="invoice-totals">
+            <div class="totals-section">
+                <div class="subtotal">
+                    <p>Sous-total: <span id="subtotal">5 000,00 €</span></p>
+                </div>
+                <div class="tax">
+                    <p>TVA (20%): <span id="taxAmount">1 000,00 €</span></p>
+                </div>
+                <div class="total">
+                    <p><strong>Total TTC: <span id="totalAmount">6 000,00 €</span></strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-info">
+            <h3>Informations de paiement</h3>
+            <div class="payment-details">
+                <p><strong>Mode de paiement:</strong> Virement bancaire</p>
+                <p><strong>IBAN:</strong> FR76 1234 5678 9012 3456 7890 123</p>
+                <p><strong>BIC:</strong> ABCDEFGH</p>
+                <p><strong>Banque:</strong> Ma Banque - Agence Paris</p>
+            </div>
+        </div>
+
+        <div class="invoice-footer">
+            <div class="terms">
+                <h4>Conditions de paiement</h4>
+                <p>Paiement à 30 jours net. En cas de retard de paiement, des intérêts de 3% par mois seront appliqués.</p>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" onclick="printInvoice()">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <button class="btn btn-secondary" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> Télécharger PDF
+                </button>
+                <button class="btn btn-success" onclick="sendEmail()">
+                    <i class="fas fa-envelope"></i> Envoyer par email
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./facture.js"></script>
+</body>
+</html>
