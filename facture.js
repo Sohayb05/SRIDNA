@@ -2,12 +2,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize invoice data
     initializeInvoice();
+    populateClientFromSession();
     
     // Add event listeners
     setupEventListeners();
     
     // Calculate totals
     calculateTotals();
+
+    // Try to save invoice once per page load
+    autoSaveInvoiceOnce();
 });
 
 // Initialize invoice with current data
@@ -17,12 +21,36 @@ function initializeInvoice() {
     dueDate.setDate(today.getDate() + 30); // 30 days from today
     
     // Set current date
-    document.getElementById('invoiceDate').textContent = formatDate(today);
-    document.getElementById('dueDate').textContent = formatDate(dueDate);
+    const invDateEl = document.getElementById('invoiceDate');
+    const dueDateEl = document.getElementById('dueDate');
+    invDateEl.textContent = formatDate(today);
+    dueDateEl.textContent = formatDate(dueDate);
+    // Store ISO dates for API
+    invDateEl.dataset.iso = today.toISOString().slice(0, 10);
+    dueDateEl.dataset.iso = dueDate.toISOString().slice(0, 10);
     
     // Generate invoice number
     const invoiceNumber = generateInvoiceNumber();
     document.getElementById('invoiceNumber').textContent = invoiceNumber;
+}
+
+// Fill client block from current logged-in user
+async function populateClientFromSession() {
+    try {
+        const res = await fetch('/me');
+        const data = await res.json();
+        if (data && data.ok) {
+            const details = document.querySelector('.client-details');
+            if (details) {
+                details.innerHTML = `
+                <p><strong>${data.name || 'Client'}</strong><br>
+                ${data.email || ''}<br>
+                </p>`;
+            }
+        }
+    } catch (e) {
+        // ignore
+    }
 }
 
 // Generate unique invoice number
@@ -93,6 +121,59 @@ function calculateTotals() {
     document.getElementById('subtotal').textContent = formatCurrency(subtotal);
     document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
     document.getElementById('totalAmount').textContent = formatCurrency(totalAmount);
+}
+
+function parseAmountFromText(text) {
+    if (!text) return 0;
+    // Remove non-digits except comma, dot, minus, then normalize comma to dot
+    const normalized = text.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
+    const value = parseFloat(normalized);
+    return isNaN(value) ? 0 : value;
+}
+
+async function submitInvoice() {
+    try {
+        const meRes = await fetch('/me');
+        const me = await meRes.json();
+        if (!me || !me.ok) return;
+
+        const number = document.getElementById('invoiceNumber').textContent;
+        const invoiceDateISO = document.getElementById('invoiceDate').dataset.iso;
+        const dueDateISO = document.getElementById('dueDate').dataset.iso;
+        const subtotal = parseAmountFromText(document.getElementById('subtotal').textContent);
+        const tax = parseAmountFromText(document.getElementById('taxAmount').textContent);
+        const total = parseAmountFromText(document.getElementById('totalAmount').textContent);
+
+        const body = new URLSearchParams();
+        body.set('invoice_number', number);
+        body.set('invoice_date', invoiceDateISO);
+        body.set('due_date', dueDateISO);
+        body.set('subtotal', String(subtotal));
+        body.set('tax', String(tax));
+        body.set('total', String(total));
+        // user_id optional; server will use session if absent
+
+        const res = await fetch('/invoice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
+        });
+        const data = await res.json();
+        if (data && data.ok) {
+            sessionStorage.setItem('invoice_saved_' + number, '1');
+            showNotification('Facture enregistrée', 'success');
+        }
+    } catch (e) {
+        // silent
+    }
+}
+
+function autoSaveInvoiceOnce() {
+    const number = document.getElementById('invoiceNumber').textContent;
+    const key = 'invoice_saved_' + number;
+    if (!sessionStorage.getItem(key)) {
+        submitInvoice();
+    }
 }
 
 // Format currency for display

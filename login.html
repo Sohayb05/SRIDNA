@@ -15,7 +15,7 @@
                 <p>Sign in to your account to continue</p>
             </div>
             
-            <form class="form" id="loginForm" action="facture.html">
+            <form class="form" id="loginForm" action="/login" method="POST">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
@@ -30,7 +30,7 @@
                         <i class="fas fa-lock"></i>
                         <input type="password" id="password" name="password" required>
                         <button type="button" class="toggle-password" onclick="togglePassword('password')">
-                            <i class="fas fa-eye"></i>
+                            
                         </button>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                 
                 <div class="form-footer">
                     <p><a href="#" class="link">Forgot your password?</a></p>
-                    <p>Don't have an account? <a href="register.html" class="link">Sign up here</a></p>
+                    <p>Don't have an account? <a href="/register" class="link">Sign up here</a></p>
                 </div>
             </form>
         </div>
