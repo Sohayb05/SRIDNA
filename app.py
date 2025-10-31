@@ -145,8 +145,7 @@ def me():
     })
 
 if __name__ == '__main__':
-    # Run: FLASK_APP=app.py flask run --port 5000
-    # Or simply: python3 app.py
-    app.run(host='127.0.0.1', port=5001, debug=True)
+    # Run: python3 app.py  (server reachable on your LAN)
+    app.run(host='0.0.0.0', port=5001, debug=True)
 
 
